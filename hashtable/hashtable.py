@@ -2,7 +2,7 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
-    def __init__(self, key, value):
+    def __init__(self, key=None, value=None):
         self.key = key
         self.value = value
         self.next = None
@@ -22,8 +22,9 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        # self.head = None
         self.capacity = MIN_CAPACITY
-        self.table = [None] * self.capacity
+        self.table = [HashTableEntry()] * self.capacity
 
     def get_num_slots(self):
         """
@@ -92,9 +93,25 @@ class HashTable:
 
         Implement this.
         """
+        # Day one answer:
+        # index = self.hash_index(key)
+        # self.table[index] = value
+
+        #Day two
         # Your code here
+        #get index value for key
         index = self.hash_index(key)
-        self.table[index] = value
+        cur = self.table[index]
+
+        while cur is not None:
+            #if we found a node with the same key, then we 
+            # overwrite the value
+            if cur.key == key:
+                self.table[index].value = value
+        
+        #else, the value goes at the head
+        self.table[index].key = key
+        self.table[index].value = value
 
     def delete(self, key):
         """
@@ -105,13 +122,20 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # index = self.hash_index(key)
+        # #if value is None, print warning
+        # selected_value = self.table[index]
+        # if selected_value == None:
+        #     print("That key doesn't exist")
+        # else:
+        #     self.table[index] = None
+
         index = self.hash_index(key)
-        #if value is None, print warning
-        selected_value = self.table[index]
-        if selected_value == None:
-            print("That key doesn't exist")
-        else:
-            self.table[index] = None
+        cur = self.table[index]
+
+        while cur is not None:
+            if cur.key = key:
+                
 
 
     def get(self, key):
@@ -123,7 +147,19 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.table[self.hash_index(key)]
+        # return self.table[self.hash_index(key)]
+
+        #Day 2 work
+        index = self.hash_index(key)
+        cur = self.table[index]
+        #get index for the key
+        while cur is not None:
+            if cur.key is key:
+                return cur.value
+            
+        return None
+            
+
 
     def resize(self, new_capacity):
         """
