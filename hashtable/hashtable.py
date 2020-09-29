@@ -46,6 +46,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        count = 0
+        for i in self.table:
+            if i != None:
+                count += 1
+        return count / self.capacity
 
 
     def fnv1(self, key):
