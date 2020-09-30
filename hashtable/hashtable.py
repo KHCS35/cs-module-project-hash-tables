@@ -2,7 +2,7 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
-    def __init__(self, key, value):
+    def __init__(self, key=None, value=None):
         self.key = key
         self.value = value
         self.next = None
@@ -20,9 +20,12 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity=MIN_CAPACITY):
         # Your code here
-
+        # self.head = None
+        self.capacity = capacity
+        self.table = [None] * self.capacity
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -35,6 +38,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -44,6 +48,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.count / self.capacity
 
 
     def fnv1(self, key):
@@ -63,7 +68,11 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
 
+        for c in key:
+            hash = (hash * 33) + ord(c)
+        return hash
 
     def hash_index(self, key):
         """
@@ -81,8 +90,31 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Day one answer:
+        # index = self.hash_index(key)
+        # self.table[index] = value
 
+        #Day two
+        # Your code here
+        #get index value for key
+        index = self.hash_index(key)
+        head = self.table[index]
+        node = HashTableEntry(key, value)
+        old_head = head
+
+        while head is not None:
+            #if we found a node with the same key, then we 
+            # overwrite the value
+            if head.key == key:
+                #overwriting the current value
+                head.value = value
+                return
+            head = head.next
+        
+        #else, the value goes at the head
+        self.table[index] = node
+        node.next = old_head
+        self.count += 1
 
     def delete(self, key):
         """
@@ -93,6 +125,42 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # index = self.hash_index(key)
+        # #if value is None, print warning
+        # selected_value = self.table[index]
+        # if selected_value == None:
+        #     print("That key doesn't exist")
+        # else:
+        #     self.table[index] = None
+
+        # index = self.hash_index(key)
+        # cur = self.table[index]
+
+        # while cur is not None:
+        #     if cur.key = key:
+
+        index = self.hash_index(key)
+        head = self.table[index]
+        prev = head
+        node = head.next
+
+        if head.key is key:
+            self.table[index] = node
+            self.count -= 1
+            return
+
+
+        while node is not None:
+            if node.key == key:
+                prev.next = node.next
+                self.count -= 1
+                return node
+            prev = prev.next
+            node = node.next
+        
+        #if the there is no node with that key:
+        return "That key Doesn't exist"
+
 
 
     def get(self, key):
@@ -104,6 +172,19 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # return self.table[self.hash_index(key)]
+
+        #Day 2 work
+        index = self.hash_index(key)
+        head = self.table[index]
+        #get index for the key
+        while head is not None:
+            if head.key is key:
+                return head.value
+            head = head.next
+            
+        return None
+            
 
 
     def resize(self, new_capacity):
@@ -114,6 +195,12 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        LF = self.get_load_factor()
+        print(LF)
+        print(self.get_num_slots())
+        
+        if LF >= 0.7:
+            self.capacity = new_capacity
 
 
 
