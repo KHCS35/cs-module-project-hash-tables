@@ -20,11 +20,12 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity=MIN_CAPACITY):
         # Your code here
         # self.head = None
-        self.capacity = MIN_CAPACITY
-        self.table = [HashTableEntry()] * self.capacity
+        self.capacity = capacity
+        self.table = [None] * self.capacity
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -47,11 +48,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        count = 0
-        for i in self.table:
-            if i != None:
-                count += 1
-        return count / self.capacity
+        return self.count / self.capacity
 
 
     def fnv1(self, key):
@@ -101,17 +98,22 @@ class HashTable:
         # Your code here
         #get index value for key
         index = self.hash_index(key)
-        cur = self.table[index]
+        head = self.table[index]
+        node = HashTableEntry(key, value)
 
-        while cur is not None:
+        while head is not None:
             #if we found a node with the same key, then we 
             # overwrite the value
-            if cur.key == key:
+            if head.key == key:
+                #overwriting the current value
                 self.table[index].value = value
+                return
+            head = head.next
         
         #else, the value goes at the head
-        self.table[index].key = key
-        self.table[index].value = value
+        self.table[index] = node
+        node.next = head
+        self.count += 1
 
     def delete(self, key):
         """
@@ -130,12 +132,24 @@ class HashTable:
         # else:
         #     self.table[index] = None
 
-        index = self.hash_index(key)
-        cur = self.table[index]
+        # index = self.hash_index(key)
+        # cur = self.table[index]
 
-        while cur is not None:
-            if cur.key = key:
-                
+        # while cur is not None:
+        #     if cur.key = key:
+
+        index = self.hash_index(key)
+        head = self.table[index]
+
+        while head is not None:
+            oldNode = head
+            if head.key == key:
+                head = None
+                return oldNode
+            head = head.next
+        #if the there is no node with that key:
+        return "That key Doesn't exist"
+
 
 
     def get(self, key):
@@ -151,11 +165,12 @@ class HashTable:
 
         #Day 2 work
         index = self.hash_index(key)
-        cur = self.table[index]
+        head = self.table[index]
         #get index for the key
-        while cur is not None:
-            if cur.key is key:
-                return cur.value
+        while head is not None:
+            if head.key is key:
+                return head.value
+            head = head.next
             
         return None
             
@@ -169,6 +184,12 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        LF = self.get_load_factor()
+        print(LF)
+        print(self.get_num_slots())
+        
+        if LF >= 0.7:
+            self.capacity = new_capacity
 
 
 
