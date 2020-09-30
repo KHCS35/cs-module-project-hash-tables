@@ -100,19 +100,20 @@ class HashTable:
         index = self.hash_index(key)
         head = self.table[index]
         node = HashTableEntry(key, value)
+        old_head = head
 
         while head is not None:
             #if we found a node with the same key, then we 
             # overwrite the value
             if head.key == key:
                 #overwriting the current value
-                self.table[index].value = value
+                head.value = value
                 return
             head = head.next
         
         #else, the value goes at the head
         self.table[index] = node
-        node.next = head
+        node.next = old_head
         self.count += 1
 
     def delete(self, key):
@@ -140,13 +141,23 @@ class HashTable:
 
         index = self.hash_index(key)
         head = self.table[index]
+        prev = head
+        node = head.next
 
-        while head is not None:
-            oldNode = head
-            if head.key == key:
-                head = None
-                return oldNode
-            head = head.next
+        if head.key is key:
+            self.table[index] = node
+            self.count -= 1
+            return
+
+
+        while node is not None:
+            if node.key == key:
+                prev.next = node.next
+                self.count -= 1
+                return node
+            prev = prev.next
+            node = node.next
+        
         #if the there is no node with that key:
         return "That key Doesn't exist"
 
